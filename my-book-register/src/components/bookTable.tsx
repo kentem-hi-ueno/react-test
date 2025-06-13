@@ -14,7 +14,7 @@ const BookTable = ({
   onClickLendingSwitch,
 }: Props) => {
   return (
-    <table border={1}>
+    <table border={1} className='books-table'>
       <thead>
         <tr>
           <td>書籍名</td>
@@ -22,14 +22,16 @@ const BookTable = ({
           <td>操作</td>
         </tr>
       </thead>
-      {bookItems.map((book) => (
-        <BookRow
+      <tbody>
+        {bookItems.map((book) => (
+          <BookRow
           bookItem={book}
           onClickDelete={onClickDelete}
           onClickLendingSwitch={onClickLendingSwitch}
           key={book.id}
-        />
-      ))}
+          />
+        ))}
+      </tbody>
     </table>
   );
 };

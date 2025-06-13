@@ -1,11 +1,28 @@
-import { useState } from 'react';
+import { ChangeEventHandler, useEffect, useState } from 'react';
 import './App.css';
 import FilterableBookTable from './components/filterableBookTable';
 import { BookItemModel } from './models';
+import LabelInput from './components/LabelInput';
+import RegistrationButton from './components/RegistrationButton';
+
+import uuid from "react-uuid";
 
 function App() {
   const [isbn, setIsbn] = useState('');
   const [books, setBooks] = useState<BookItemModel[]>([]);
+
+  useEffect(() => {
+    const initialBooks = localStorage.getItem("booksList");
+    if (initialBooks) {
+      setBooks(JSON.parse(initialBooks));
+    }
+  },[])
+
+  useEffect(() => {
+    if(books.length > 0){
+      localStorage.setItem("booksList",JSON.stringify(books))
+    }
+  },[books])
 
   const handleClickButton = (): void => {
     fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`)
@@ -26,38 +43,42 @@ function App() {
     setBooks((prev) => [
       ...prev,
       {
-        id: prev.length.toString(),
+        id: uuid(),
         ...postedItem,
       },
     ]);
+  }
+  
+  const handleChangeIsbn: ChangeEventHandler<HTMLInputElement> = (e) =>
+      setIsbn(e.target.value);
+
+  const handleClickDelete = (id:string) => {
+    setBooks((prev) => prev.filter(val => val.id != id))
+  }
+
+  const handleClickLendingSwitch = (id:string) => {
+    setBooks((prev) => prev.map(val => {
+      if(val.id === id){
+        return {...val,isOnLoan:!val.isOnLoan};
+      }else{
+        return val
+      }
+    }))
   }
 
   return (
     <div className="App">
       {/* 第1問：コンポーネントに分割 ↓ ↓ ↓ ↓ ↓ */}
       <div className="book-register">
-        <div className="label-input">
-          <label className="label">
-            ISBNコード
-          </label>
-          <input className="input" placeholder="入力してください" value={isbn} onChange={(e) => setIsbn(e.target.value)}></input>
-        </div>
-        <button className="button" onClick={handleClickButton}>
-          書籍登録
-        </button>
+        <LabelInput onChangeInput = {handleChangeIsbn} inputValue = {isbn} labelMessage ={"ISBNコード"}/>
+        <RegistrationButton onClickButton={handleClickButton}/>
       </div>
       {/* 第1問：コンポーネントに分割 ↑ ↑ ↑ ↑ ↑ ↑ */}
       <hr />
       <FilterableBookTable
         books={books}
-        onClickDelete={(id) => {
-            {/* 第2問：貸出 or 返却 or 削除の処理を追加 */}            
-          }
-        }
-        onClickLendingSwitch={(id) => {
-            {/* 第2問：貸出 or 返却 or 削除の処理を追加 */}            
-          }
-        }
+        onClickDelete={(id) => handleClickDelete(id)}
+        onClickLendingSwitch={(id) => handleClickLendingSwitch(id)}
       />
     </div>
   );
