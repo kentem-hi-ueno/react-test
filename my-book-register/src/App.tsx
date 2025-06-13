@@ -1,4 +1,4 @@
-import { ChangeEventHandler, useState } from 'react';
+import { ChangeEventHandler, useEffect, useState } from 'react';
 import './App.css';
 import FilterableBookTable from './components/filterableBookTable';
 import { BookItemModel } from './models';
@@ -10,6 +10,19 @@ import uuid from "react-uuid";
 function App() {
   const [isbn, setIsbn] = useState('');
   const [books, setBooks] = useState<BookItemModel[]>([]);
+
+  useEffect(() => {
+    const initialBooks = localStorage.getItem("booksList");
+    if (initialBooks) {
+      setBooks(JSON.parse(initialBooks));
+    }
+  },[])
+
+  useEffect(() => {
+    if(books.length > 0){
+      localStorage.setItem("booksList",JSON.stringify(books))
+    }
+  },[books])
 
   const handleClickButton = (): void => {
     fetch(`https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`)
