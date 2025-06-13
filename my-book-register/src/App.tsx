@@ -5,6 +5,8 @@ import { BookItemModel } from './models';
 import LabelInput from './components/LabelInput';
 import RegistrationButton from './components/RegistrationButton';
 
+import uuid from "react-uuid";
+
 function App() {
   const [isbn, setIsbn] = useState('');
   const [books, setBooks] = useState<BookItemModel[]>([]);
@@ -28,7 +30,7 @@ function App() {
     setBooks((prev) => [
       ...prev,
       {
-        id: prev.length.toString(),
+        id: uuid(),
         ...postedItem,
       },
     ]);
@@ -44,9 +46,7 @@ function App() {
   const handleClickLendingSwitch = (id:string) => {
     setBooks((prev) => prev.map(val => {
       if(val.id === id){
-        const newVal = {...val} ;
-        newVal.isOnLoan = !newVal.isOnLoan;
-        return newVal;
+        return {...val,isOnLoan:!val.isOnLoan};
       }else{
         return val
       }
