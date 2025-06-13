@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { ChangeEventHandler, useState } from 'react';
 import './App.css';
 import FilterableBookTable from './components/filterableBookTable';
 import { BookItemModel } from './models';
@@ -34,6 +34,9 @@ function App() {
     ]);
   }
   
+  const handleChangeIsbn: ChangeEventHandler<HTMLInputElement> = (e) =>
+      setIsbn(e.target.value);
+
   const handleClickDelete = (id:string) => {
     setBooks((prev) => prev.filter(val => val.id != id))
   }
@@ -54,7 +57,7 @@ function App() {
     <div className="App">
       {/* 第1問：コンポーネントに分割 ↓ ↓ ↓ ↓ ↓ */}
       <div className="book-register">
-        <LabelInput onIsbn = {setIsbn} isbn = {isbn}/>
+        <LabelInput onChangeInput = {handleChangeIsbn} inputValue = {isbn} labelMessage ={"ISBNコード"}/>
         <RegistrationButton onClickButton={handleClickButton}/>
       </div>
       {/* 第1問：コンポーネントに分割 ↑ ↑ ↑ ↑ ↑ ↑ */}

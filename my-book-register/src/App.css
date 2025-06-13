@@ -17,12 +17,20 @@
 
 .label-input {
   display: flex;
+  gap: 10px;
 }
 
 .book-register {
   display: flex;
+  gap: 10px;
 }
 
 .filterable-book-table {
-  display: flex;
+  width: 100%;
+}
+
+.books-table{
+  margin-top: 10px;
+  width: 100%;
+  text-align: center;
 }

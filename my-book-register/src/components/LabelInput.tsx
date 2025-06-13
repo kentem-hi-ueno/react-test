@@ -1,17 +1,18 @@
-import React from 'react'
+import React, { ChangeEventHandler } from 'react'
 
 type LabelProps = {
-  onIsbn : (isbnCode:string) => void;
-  isbn : string;
+  onChangeInput: ChangeEventHandler<HTMLInputElement>;
+  inputValue : string;
+  labelMessage : string;
 }
 
-const LabelInput:React.FC<LabelProps> = ({onIsbn,isbn}) => {
+const LabelInput:React.FC<LabelProps> = ({onChangeInput,inputValue,labelMessage}) => {
   return (
         <div className="label-input">
           <label className="label">
-            ISBNコード
+            {labelMessage}
           </label>
-          <input className="input" placeholder="入力してください" value={isbn} onChange={(e) => onIsbn(e.target.value)}></input>
+          <input className="input" placeholder="入力してください" value={inputValue} onChange={(e) => onChangeInput(e)}></input>
         </div>
   )
 }

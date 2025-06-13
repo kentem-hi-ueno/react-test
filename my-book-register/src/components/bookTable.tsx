@@ -14,7 +14,7 @@ const BookTable = ({
   onClickLendingSwitch,
 }: Props) => {
   return (
-    <table border={1}>
+    <table border={1} className='books-table'>
       <thead>
         <tr>
           <td>書籍名</td>
