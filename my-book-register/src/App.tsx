@@ -2,6 +2,8 @@ import { useState } from 'react';
 import './App.css';
 import FilterableBookTable from './components/filterableBookTable';
 import { BookItemModel } from './models';
+import LabelInput from './components/LabelInput';
+import RegistrationButton from './components/RegistrationButton';
 
 function App() {
   const [isbn, setIsbn] = useState('');
@@ -31,33 +33,36 @@ function App() {
       },
     ]);
   }
+  
+  const handleClickDelete = (id:string) => {
+    setBooks((prev) => prev.filter(val => val.id != id))
+  }
+
+  const handleClickLendingSwitch = (id:string) => {
+    setBooks((prev) => prev.map(val => {
+      if(val.id === id){
+        const newVal = {...val} ;
+        newVal.isOnLoan = !newVal.isOnLoan;
+        return newVal;
+      }else{
+        return val
+      }
+    }))
+  }
 
   return (
     <div className="App">
       {/* 第1問：コンポーネントに分割 ↓ ↓ ↓ ↓ ↓ */}
       <div className="book-register">
-        <div className="label-input">
-          <label className="label">
-            ISBNコード
-          </label>
-          <input className="input" placeholder="入力してください" value={isbn} onChange={(e) => setIsbn(e.target.value)}></input>
-        </div>
-        <button className="button" onClick={handleClickButton}>
-          書籍登録
-        </button>
+        <LabelInput onIsbn = {setIsbn} isbn = {isbn}/>
+        <RegistrationButton onClickButton={handleClickButton}/>
       </div>
       {/* 第1問：コンポーネントに分割 ↑ ↑ ↑ ↑ ↑ ↑ */}
       <hr />
       <FilterableBookTable
         books={books}
-        onClickDelete={(id) => {
-            {/* 第2問：貸出 or 返却 or 削除の処理を追加 */}            
-          }
-        }
-        onClickLendingSwitch={(id) => {
-            {/* 第2問：貸出 or 返却 or 削除の処理を追加 */}            
-          }
-        }
+        onClickDelete={(id) => handleClickDelete(id)}
+        onClickLendingSwitch={(id) => handleClickLendingSwitch(id)}
       />
     </div>
   );
